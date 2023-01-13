@@ -47,7 +47,7 @@ public class StudentController {
 
 	/*
 	 * @param student - the Student model with name and optional email  
-	 * @return a JSONObject with description "SAVED <student id>!" and the saved Student model.
+	 * @return a JSONObject with description "SAVED ID: <student id>!" and the saved Student model.
 	 *         The Student model contains four fields as follows:
 	 * <ul>
 	 *   <li>id - student id</li>
