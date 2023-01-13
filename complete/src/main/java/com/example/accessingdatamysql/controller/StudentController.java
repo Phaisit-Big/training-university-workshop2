@@ -1,12 +1,14 @@
 package com.example.accessingdatamysql.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.accessingdatamysql.model.Student;
@@ -35,9 +38,11 @@ public class StudentController {
 	 * @return list all students in a JSONArray with JSONObjects transfermed from Student models
 	 */
 	@RequestMapping(path="/students", method=RequestMethod.GET) 
-	public @ResponseBody Iterable<Student> getAllStudents() {
+	public @ResponseBody ResponseEntity<Object> getAllStudents() {
 
-		return studentService.findAll();
+		Iterable<Student> resultList = studentService.findAll();
+
+		return ResponseEntity.status(HttpStatus.OK).body(resultList);
 	}
 
 	/*
@@ -52,13 +57,19 @@ public class StudentController {
 	 * </ul>
 	 */
 	@RequestMapping(path="/students", method=RequestMethod.POST) 
-	public @ResponseBody ResponseEntity<Object> addNewStudent(@RequestHeader(name="Accept-Language", required=false) Locale locale,
-											@RequestBody Student user) {
+	public @ResponseBody ResponseEntity<Object> addNewStudent(@RequestHeader HttpHeaders headers,
+																//@RequestParam(name="lang", defaultValue="th") String lang,
+																@RequestBody Student student) {
 
-		Student resultStudent = studentService.save(user);
-				
-		//locale = new Locale("th"); 
-	    //locale = LocaleContextHolder.getLocale(); 
+		Student resultStudent = studentService.save(student);
+	
+		List<Locale> locales = headers.getAcceptLanguageAsLocales();
+		Locale locale = new Locale("th", "TH"); 						// LocaleContextHolder.getLocale(); 
+		if (null != locales && 0 < locales.size()) {
+			locale = locales.get(0);
+		}
+		//Locale locale = new Locale(lang);
+
 		String resultMessage = messageSource.getMessage("users.add.rs", new Object[] {resultStudent.getId()}, locale);
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
