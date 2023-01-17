@@ -79,4 +79,15 @@ public class StudentController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(resultMap);
 	}
 
+
+	/*
+	 * @return the number of students
+	 */
+	@RequestMapping(path="/students/count", method=RequestMethod.GET) 
+	public @ResponseBody ResponseEntity<Object> countStudents(@RequestParam(name="isActive", defaultValue="true") boolean isActive) {
+
+		int count = studentService.countStudents(isActive);
+
+		return ResponseEntity.status(HttpStatus.OK).body(count);
+	}
 }

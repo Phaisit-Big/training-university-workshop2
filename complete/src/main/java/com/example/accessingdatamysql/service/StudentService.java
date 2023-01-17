@@ -3,6 +3,7 @@ package com.example.accessingdatamysql.service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,4 +56,10 @@ public class StudentService {
 
         return resultStudent;
     }
+
+
+    public int countStudents(boolean isActive) {   
+        Integer count = studentRepository.countStudents(isActive? 1: 0);
+        return Optional.ofNullable(count).orElse(0);    
+    }    
 }
