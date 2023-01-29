@@ -83,7 +83,7 @@ public class StudentControllerTests {
 	}
 
 
-//	@Test
+	@Test
 	public void addNewStudent_shouldReturnSaved() throws Exception {
 
 		String dummyRequestBody = """
@@ -93,6 +93,12 @@ public class StudentControllerTests {
 		dummyStudentEntity.setEmail("name123@gmail.com");							
 		when(studentRepository.save(any())).thenReturn(dummyStudentEntity);
 
+		Student dummyStudent = new Student();
+		dummyStudent.setId(dummyStudentEntity.getId());
+		dummyStudent.setName(dummyStudentEntity.getName());
+		dummyStudent.setEmail(dummyStudentEntity.getEmail());
+		dummyStudent.setIsActive(1 == dummyStudentEntity.getState());
+		when(studentService.save(any())).thenReturn(dummyStudent);
 
 		MvcResult result = this.mockMvc.perform(post("/students")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -112,14 +118,21 @@ public class StudentControllerTests {
 	}
 
 
-//	@Test
+	@Test
 	public void addNewStudentWithoutEmail_shouldReturnNullEmail() throws Exception {
 
 		String jsonBody = """
 							{"name":"name123"}""";
 		
-		when(studentRepository.save(any())).thenReturn(new StudentEntity(123, "name123", 0));
+		StudentEntity dummyStudentEntity = new StudentEntity(123, "name123", 0);    
+		when(studentRepository.save(any())).thenReturn(dummyStudentEntity);
 
+		Student dummyStudent = new Student();
+		dummyStudent.setId(dummyStudentEntity.getId());
+		dummyStudent.setName(dummyStudentEntity.getName());
+		dummyStudent.setEmail(dummyStudentEntity.getEmail());
+		dummyStudent.setIsActive(1 == dummyStudentEntity.getState());
+		when(studentService.save(any())).thenReturn(dummyStudent);
 
 		MvcResult result = this.mockMvc.perform(post("/students")
 				.contentType(MediaType.APPLICATION_JSON)
